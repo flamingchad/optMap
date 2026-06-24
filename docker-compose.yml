@@ -1,0 +1,51 @@
+services:
+  # 1. Download the Berlin data from Geofabrik
+  download:
+    image: alpine:latest
+    volumes:
+      - ./osrm-data:/data
+    command: >
+      sh -c "apk add --no-cache wget && 
+      wget -O /data/berlin-latest.osm.pbf http://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf"
+
+  # 2. Extract the routing data using the default car profile
+  extract:
+    image: osrm/osrm-backend:latest
+    volumes:
+      - ./osrm-data:/data
+    command: osrm-extract -p /opt/car.lua /data/berlin-latest.osm.pbf
+    depends_on:
+      download:
+        condition: service_completed_successfully
+
+  # 3. Partition the graph for the MLD algorithm
+  partition:
+    image: osrm/osrm-backend:latest
+    volumes:
+      - ./osrm-data:/data
+    command: osrm-partition /data/berlin-latest.osrm
+    depends_on:
+      extract:
+        condition: service_completed_successfully
+
+  # 4. Customize the cells for MLD routing
+  customize:
+    image: osrm/osrm-backend:latest
+    volumes:
+      - ./osrm-data:/data
+    command: osrm-customize /data/berlin-latest.osrm
+    depends_on:
+      partition:
+        condition: service_completed_successfully
+
+  # 5. Start the HTTP routing server
+  routed:
+    image: osrm/osrm-backend:latest
+    volumes:
+      - ./osrm-data:/data
+    command: osrm-routed --algorithm mld /data/berlin-latest.osrm
+    ports:
+      - "5000:5000"
+    depends_on:
+      customize:
+        condition: service_completed_successfully
