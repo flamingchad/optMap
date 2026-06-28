@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Data
-public class RouteRequestDto {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class RouteResponseDto {
+    private Double distance;
+    private Double duration;
     @Builder.Default
-    private List<Coordinates> routeWayPoints = new ArrayList<>();
+    private List<Coordinates> resultRouteWayPoints = new ArrayList<>();
 }

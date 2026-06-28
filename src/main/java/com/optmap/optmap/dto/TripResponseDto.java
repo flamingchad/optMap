@@ -5,14 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Data
-public class RouteRequestDto {
-    @Builder.Default
-    private List<Coordinates> routeWayPoints = new ArrayList<>();
+public class TripResponseDto {
+    private List<Route> trips;
+    private List<Waypoint> waypoints;
 }
