@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -35,7 +36,7 @@ public class ApiController {
         Double distance = routes.getFirst().getDistance();
         Double duration = routes.getFirst().getDuration();
 
-        List<Coordinates> coordinates = waypoints.stream().map(
+        List<Coordinates> coordinates = waypoints.stream().sorted(Comparator.comparingInt(Waypoint::getWaypointIndex)).map(
                 waypoint -> {
                     double longitude = waypoint.getLocation().get(0);
                     double latitude = waypoint.getLocation().get(1);
