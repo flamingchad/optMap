@@ -2,6 +2,7 @@ package com.optmap.optmap.controller;
 
 import com.optmap.optmap.dto.*;
 import com.optmap.optmap.services.OSRMService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class ApiController {
     private final OSRMService osrmService;
 
     @PostMapping
-    public ResponseEntity<RouteResponseDto> postRequest(@RequestBody RouteRequestDto routeRequestDto) {
+    public ResponseEntity<RouteResponseDto> postRequest(@RequestBody @Valid RouteRequestDto routeRequestDto) {
         TripResponseDto tripResponseDto = osrmService.connectWithOSRM(routeRequestDto.getRouteWayPoints());
 
         return ResponseEntity
