@@ -87,4 +87,37 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(statusCode).body(apiError);
     }
+
+    @ExceptionHandler(value = {NominatimServiceException.class})
+    public ResponseEntity<ApiError> nominatimServiceException(NominatimServiceException e, HttpServletRequest request) {
+        log.error("Issue with Nominatim detected: {}", e.getMessage(), e);
+
+        int statusCode = HttpStatus.SERVICE_UNAVAILABLE.value();
+
+        ApiError apiError = new ApiError(
+                LocalDateTime.now(),
+                statusCode,
+                "Service Unavailable",
+                "There is an issue with the Search service.",
+                request.getRequestURL().toString()
+        );
+
+        return ResponseEntity.status(statusCode).body(apiError);
+    }
+
+    @ExceptionHandler(value = {InvalidSearchRequestException.class})
+    public ResponseEntity<ApiError> invalidSearchRequestException(InvalidSearchRequestException e, HttpServletRequest request) {
+        log.error("Invalid input detected from front-end: {}", e.getMessage(), e);
+
+        int statusCode = HttpStatus.BAD_REQUEST.value();
+
+        ApiError apiError = new ApiError(
+                LocalDateTime.now(),
+                statusCode,
+                "Bad Request",
+                "Bad search query",
+                request.getRequestURL().toString()
+        );
+        return ResponseEntity.status(statusCode).body(apiError);
+    }
 }
