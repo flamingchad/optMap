@@ -1,0 +1,10 @@
+services:
+  nominatim:
+    image: mediagis/nominatim:5.3
+    container_name: nominatim
+    ports:
+      - "7070:8080"
+    environment:
+      - PBF_URL=https://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf
+    tty: true
+    stdin_open: true
